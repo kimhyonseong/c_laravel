@@ -13,4 +13,8 @@ class IndexController extends Controller
         $items = ['Apple','Banana'];
         return view('welcome')->with(compact('greeting','name','items'));
     }
+
+    public function show() {
+        return 'Luigi!';
+    }
 }

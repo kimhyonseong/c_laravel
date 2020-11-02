@@ -52,6 +52,7 @@ return [
     |
     */
 
+    //여기서 url 변경 가능
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),

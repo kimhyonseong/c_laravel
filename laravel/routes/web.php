@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,8 +36,34 @@ use Illuminate\Support\Facades\Route;
 Route::get('/','App\Http\Controllers\IndexController@index');
 //Route::resource('/','App\Http\Controllers\PostController');
 //Route::resource('/posts','App\Http\Controllers\PostController');
-Route::resource('posts','App\Http\Controllers\PostController');
+//Route::resource('posts','App\Http\Controllers\PostController');
+//Route::resource('posts.comments','App\Http\Controllers\PostCommentController');
 
-Route::get('/foo', function () {
+//Route::get('posts',[
+//    'as' => 'posts.index',
+//    'uses' => 'App\Http\Controllers\PostController@index'
+//]);
+
+Route::get('foo', function () {
     return 'Hello World';
 });
+
+Route::get('index',[
+   'as' => 'LuigiIndex',
+   'uses' => 'App\Http\Controllers\IndexController@show'
+]);
+
+Route::get('posts',function (){
+//    $posts = App\Models\Post::get();
+    $posts = App\Models\Post::with('user')->paginate(5);
+//    $posts = App\Models\Post::get();
+//    $posts->load('user');
+
+    return view('posts.index',compact('posts'));
+});
+
+
+//매우 중요
+//DB::listen(function($event){
+//    var_dump($event->sql);
+//});
