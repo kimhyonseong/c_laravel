@@ -53,15 +53,35 @@ Route::get('index',[
    'uses' => 'App\Http\Controllers\IndexController@show'
 ]);
 
-Route::get('posts',function (){
-//    $posts = App\Models\Post::get();
-    $posts = App\Models\Post::with('user')->paginate(5);
-//    $posts = App\Models\Post::get();
-//    $posts->load('user');
+//Route::get('posts',function (){
+////    $posts = App\Models\Post::get();
+//    $posts = App\Models\Post::with('user')->paginate(5);
+////    $posts = App\Models\Post::get();
+////    $posts->load('user');
+//
+//    return view('posts.index',compact('posts'));
+//});
 
-    return view('posts.index',compact('posts'));
-});
+//Route::post('posts',function (Illuminate\Http\Request $request) {
+//    $rule = [
+//        'title'  => 'required',
+//        'body'   => 'required|min:10'
+//    ];
+//
+//    $validator = Validator::make($request->all(),$rule);
+//
+//    if ($validator->fails()) {
+//        return redirect('posts/create')->withErrors($validator)->withInput();
+//    }
+//
+//    return 'Valid & proceed to next job ~';
+//});
 
+//Route::get('posts/create',function () {
+//    return view('posts.create');
+//});
+
+Route::resource('posts', 'App\Http\Controllers\PostController');
 
 //매우 중요
 //DB::listen(function($event){

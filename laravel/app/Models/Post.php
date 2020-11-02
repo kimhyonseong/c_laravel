@@ -16,4 +16,9 @@ class Post extends Model
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
+
+    public static $rules = [
+        'title' => ['required'],
+        'body' => ['required','min:10']
+    ];
 }
