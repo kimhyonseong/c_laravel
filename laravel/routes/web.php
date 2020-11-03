@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\DB;
 //    return view('error.503');    //디렉토리 속은 .으로 표기
 //});
 
-Route::get('/','App\Http\Controllers\IndexController@index');
+//Route::get('/','App\Http\Controllers\IndexController@index');
 //Route::resource('/','App\Http\Controllers\PostController');
 //Route::resource('/posts','App\Http\Controllers\PostController');
 //Route::resource('posts','App\Http\Controllers\PostController');
@@ -83,6 +83,9 @@ Route::get('index',[
 
 Route::resource('posts', 'App\Http\Controllers\PostController');
 
+Route::get('/',function (){
+    return App\Models\Post::findOrFail(100);
+});
 //매우 중요
 //DB::listen(function($event){
 //    var_dump($event->sql);
