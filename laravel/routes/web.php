@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\DB;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Route::get('/welcome', function () {
-//    return view('welcome');
-//});
 
 //Route::get('/',function () {
 //    $greeting = 'Hello';
@@ -33,17 +30,6 @@ use Illuminate\Support\Facades\DB;
 //    return view('error.503');    //디렉토리 속은 .으로 표기
 //});
 
-//Route::get('/','App\Http\Controllers\IndexController@index');
-//Route::resource('/','App\Http\Controllers\PostController');
-//Route::resource('/posts','App\Http\Controllers\PostController');
-//Route::resource('posts','App\Http\Controllers\PostController');
-//Route::resource('posts.comments','App\Http\Controllers\PostCommentController');
-
-//Route::get('posts',[
-//    'as' => 'posts.index',
-//    'uses' => 'App\Http\Controllers\PostController@index'
-//]);
-
 Route::get('foo', function () {
     return 'Hello World';
 });
@@ -53,39 +39,26 @@ Route::get('index',[
    'uses' => 'App\Http\Controllers\IndexController@show'
 ]);
 
-//Route::get('posts',function (){
-////    $posts = App\Models\Post::get();
-//    $posts = App\Models\Post::with('user')->paginate(5);
-////    $posts = App\Models\Post::get();
-////    $posts->load('user');
-//
-//    return view('posts.index',compact('posts'));
-//});
-
-//Route::post('posts',function (Illuminate\Http\Request $request) {
-//    $rule = [
-//        'title'  => 'required',
-//        'body'   => 'required|min:10'
-//    ];
-//
-//    $validator = Validator::make($request->all(),$rule);
-//
-//    if ($validator->fails()) {
-//        return redirect('posts/create')->withErrors($validator)->withInput();
-//    }
-//
-//    return 'Valid & proceed to next job ~';
-//});
-
-//Route::get('posts/create',function () {
-//    return view('posts.create');
-//});
 
 Route::resource('posts', 'App\Http\Controllers\PostController');
 
 Route::get('/',function (){
-    return App\Models\Post::findOrFail(100);
+    //return App\Models\Post::findOrFail(100);
+    $text =<<<EOT
+**Note** To make lists look nice, you can wrap items with hanging indents:
+
+    -   Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+        Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi,
+        viverra nec, fringilla in, laoreet vitae, risus.
+    -   Donec sit amet nisl. Aliquam semper ipsum sit amet velit.
+        Suspendisse id sem consectetuer libero luctus adipiscing.
+EOT;
+    return app(ParsedownExtra::class)->text($text);
 });
+
+
+
+
 //매우 중요
 //DB::listen(function($event){
 //    var_dump($event->sql);
