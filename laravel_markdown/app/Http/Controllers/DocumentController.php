@@ -15,9 +15,12 @@ class DocumentController extends Controller
     }
 
     public function show($file= null){
-        return view('document.index',[
-            'index' => mark_down($this->document->get()),
-            'content' => mark_down($this->document->get($file ?:'01-welcome.md'))
-        ]);
+        $index = \Cache::remember('document.index',120,function (){
+            return mark_down($this->document->get());
+        });
+        $content = \Cache::remember("document.{$file}",120,function () use ($file){
+            return mark_down($this->document->get($file));
+        });
+        return view('document.index',compact('index','content'));
     }
 }
