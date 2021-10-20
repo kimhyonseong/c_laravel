@@ -13,9 +13,9 @@ class jsonPaseTestController extends Controller
 
         $str = json_decode($jsonStr,false);
 
-//        foreach ($str as $poke) {
-//            echo $poke->name.'<br>';
-//        }
+        foreach ($str as $poke) {
+            echo $poke->name.'<br>';
+        }
         $returnData = "";
         return view('jsonParseTest',['data'=>$returnData]);
     }

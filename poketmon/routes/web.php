@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\pokedexController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\jsonPaseTestController;
 
@@ -19,3 +20,6 @@ Route::get('/', function () {
 });
 
 Route::get('/jsonParse', [jsonPaseTestController::class,'show'])->name('jsonParse');
+
+Route::get('/pokedex', [pokedexController::class,'show'])->name('pokedex');
+Route::get('/poketAjax/{page}', [pokedexController::class,'showMore'])->name('poketAjax');
