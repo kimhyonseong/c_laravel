@@ -54,7 +54,7 @@
         }
 
         main ul li {
-            padding-right: 10px;
+            margin-right: 10px;
         }
 
         a {
@@ -74,6 +74,27 @@
         a:hover {
             text-decoration: none;
             color: black;
+        }
+        #poketmonList li {
+            width: 150px;
+            height: 180px;
+            box-shadow: 3px 3px 7px gray;
+            border-radius: 10px;
+            margin: 20px;
+        }
+        #poketmonList li .li_wrap {
+            box-sizing: border-box; padding: 10px; width: 100%; height: 100%;
+        }
+        #poketmonList li .li_wrap .img {
+            width: 100%; height: 75%; display: flex; justify-content: center;
+        }
+        #poketmonList li .li_wrap .info {
+            width: 100%;
+        }
+        #poketmonList li .li_wrap .info .num{
+            font-size: small;
+            color: rgba(0,0,0,0.6);
+            margin: 1px 0;
         }
     </style>
 </head>
@@ -95,26 +116,46 @@
     </header>
     <main>
         <ul id="poketmonList">
-            <li style="width: 150px; height: 200px; box-shadow: 3px 3px 7px gray; border-radius: 10px">
-                <div style="padding: 10px; width: 100%; height: 100%;">
-                    <div class="img" style="width: 100%; height: 100px;">
+            <li>
+                <div class="li_wrap">
+                    <div class="img">
                         <div class="thumb">
-                            <img src="" alt="">
+                            <img src="https://via.placeholder.com/120" alt="임시 이미지">
                         </div>
                     </div>
-                    <div style="width: 100%">
-                        1 김현성
+                    <div class="info">
+                        <div class="num">No. 000</div>
+                        <div class="name">김현성</div>
                     </div>
                 </div>
             </li>
         </ul>
     </main>
     <script>
+        let page = 0;
+        let ajaxStop = true;
+        let poketmonList = document.getElementById('poketmonList');
+
         window.addEventListener("DOMContentLoaded", function () {
-            showPoketmon(1);
+            // 최초 함수 실행
+            showPoketmon(page);
+        })
+
+        window.addEventListener('scroll', function () {
+            let list = poketmonList.children;
+            let lastLiOffset = list.item(list.length-1).offsetTop;
+            let windowOffset = Math.ceil(window.pageYOffset + window.innerHeight);
+
+            // 스크롤시 함수 실행
+            if (ajaxStop && (lastLiOffset < windowOffset)) {
+                page++;
+                console.log(page);
+                showPoketmon(page);
+            }
         })
 
         function showPoketmon(page) {
+            ajaxStop = false;
             let ajax = new XMLHttpRequest();
             let url = "/poketAjax/" + page;
             let ul = document.getElementById("poketmonList");
@@ -128,16 +169,11 @@
                         let poketmons = JSON.parse(ajax.responseText);
 
                         for (let i = 0; i < poketmons.result.length; i++) {
-                            html += `<li>
-                                    <a href="javascript:void(0)">
-                                    <div>
-                                    ${poketmons.result[i].num}
-                                    ${poketmons.result[i].name}
-                                    </div>
-                                    </a>
-                                    </li>`;
+                            html += poketmons.result[i].html;
                         }
                         ul.innerHTML += html;
+
+                        ajaxStop = poketmons.result.length > 0;
                     }
                 }
             }

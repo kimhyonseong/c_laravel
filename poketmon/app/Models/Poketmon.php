@@ -29,4 +29,8 @@ class Poketmon extends Model
     public function type() {
         return $this->belongsTo('App\Models\Type');
     }
+
+    public function evolution() {
+        return $this->hasMany('App\Models\Evolution');
+    }
 }
