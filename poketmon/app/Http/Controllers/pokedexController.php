@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Poketmon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class pokedexController extends Controller
 {
@@ -24,11 +25,6 @@ class pokedexController extends Controller
             $page = 0;
         }
 
-        /* 안됨...
-        if (!is_int($page)) {
-            $page = 0;
-        } */
-
         $resultArray = [];
         $poketmons = Poketmon::all()->skip($offset * $page)->take($offset);
 
@@ -39,18 +35,20 @@ class pokedexController extends Controller
             $poket['num'] = 'No.'.sprintf('%03d',$result['num']);
             $poket['name'] = $result['name'];
             $poket['html'] = '<li>
-                <div class="li_wrap">
-                    <div class="img">
-                        <div class="thumb">
-                            <!--<img src="'.$result['img'].'" alt="'.$poket['name'].'">-->
-                            <img src="https://via.placeholder.com/120" alt="'.$poket['name'].'">
+                <a href="pokedex/'.$result['num'].'">
+                    <div class="li_wrap">
+                        <div class="img">
+                            <div class="thumb">
+                                <!--<img src="'.$result['img'].'" alt="'.$poket['name'].'">-->
+                                <img src="https://via.placeholder.com/120" alt="'.$poket['name'].'">
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="num">'.$poket['num'].'</div>
+                            <div class="name">'.$poket['name'].'</div>
                         </div>
                     </div>
-                    <div class="info">
-                        <div class="num">'.$poket['num'].'</div>
-                        <div class="name">'.$poket['name'].'</div>
-                    </div>
-                </div>
+                </a>
             </li>';
             array_push($resultArray,$poket);
         }
@@ -61,32 +59,41 @@ class pokedexController extends Controller
 
     public function showDetail(Request $request, $num){
         $result = [];
+        $evolution = [];
 
         $poketmon = Poketmon::all()->where('num','=',$num);
-        $pre_poketmon = Poketmon::all()->where('next_evolution','=',$num);
 
         foreach ($poketmon as $poketInfo) {
             $info['num'] = $poketInfo['num'];
             $info['name'] = $poketInfo['name'];
             $info['img'] = $poketInfo['img'];
-            $info['next_evolution'] = $poketInfo['next_evolution'];
-            $info['next_evolution_info'] = [];
+            $info['group_num'] = $poketInfo['group_num'];
 
-            if ($info['next_evolution'] > 0) {
-                $next_poketmon = Poketmon::all()->where('num', '=', $info['next_evolution']);
+            if ($info['group_num'] > 0) {
+                $evolutionPoke = DB::table('poketmons as a')
+                    ->join('evolutions as b','a.group_num','=','b.group_num')
+                    ->select('b.*')
+                    ->where('a.num','=',$info['num'])
+                    ->get();
 
-                foreach ($next_poketmon as $next_poketInfo) {
-                    $next_info['num'] = $next_poketInfo['num'];
-                    $next_info['name'] = $next_poketInfo['name'];
-                    $next_info['img'] = $next_poketInfo['img'];
-                    $next_info['next_evolution'] = $next_poketInfo['next_evolution'];
+                foreach ($evolutionPoke as $evolPoke) {
+                    $evolInfo = [];
+                    $evolInfo['name'] = $evolPoke->name;
+                    $evolInfo['num'] = $evolPoke->num;
+                    $evolInfo['img'] = $evolPoke->img;
 
-                    array_push($info['next_evolution_info'],$next_info);
+                    // 진화 포켓몬
+                    array_push($evolution,$evolInfo);
                 }
             }
 
+            // 현재 포켓몬
             array_push($result,$info);
         }
-        return view('poketDetail',['data'=>$result]);
+        return view('poketDetail',
+            [
+                'poke'=>$result,
+                'evolution' =>$evolution
+            ]);
     }
 }

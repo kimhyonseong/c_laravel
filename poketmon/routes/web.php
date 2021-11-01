@@ -22,4 +22,5 @@ Route::get('/', function () {
 Route::get('/jsonParse', [jsonPaseTestController::class,'show'])->name('jsonParse');
 
 Route::get('/pokedex', [pokedexController::class,'show'])->name('pokedex');
+Route::get('/pokedex/{num}', [pokedexController::class,'showDetail'])->name('pokedexDetail');
 Route::get('/poketAjax/{page}', [pokedexController::class,'showMore'])->name('poketAjax');
