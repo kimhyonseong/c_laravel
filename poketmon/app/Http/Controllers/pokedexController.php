@@ -53,21 +53,45 @@ class pokedexController extends Controller
             array_push($resultArray,$poket);
         }
 
-//        return response()->json(array('result'=>$page));
         return response()->json(array('result'=>$resultArray));
     }
 
     public function showDetail(Request $request, $num){
         $result = [];
+        $pokeList = [];
         $evolution = [];
 
-        $poketmon = Poketmon::all()->where('num','=',$num);
+        $thisPoke = Poketmon::all()->where('num','=',$num);
+        $pokeListRes = DB::table('poketmons')->select('name','num')
+            ->whereRaw('if((?) < (select MIN(num) from poketmons),num = (select MAX(num) from poketmons), num = ?)',[$num-1,$num-1])
+            ->orWhereRaw('if(? > (select MAX(num) from poketmons),num = (select MIN(num) from poketmons), num = ?)',[$num+1,$num+1])
+            ->get();
 
-        foreach ($poketmon as $poketInfo) {
-            $info['num'] = $poketInfo['num'];
-            $info['name'] = $poketInfo['name'];
-            $info['img'] = $poketInfo['img'];
-            $info['group_num'] = $poketInfo['group_num'];
+        foreach ($pokeListRes as $pokeInfo) {
+            // 다음 번호 포켓몬
+            if ($pokeInfo->num == $num + 1) {
+                $next['num'] = $pokeInfo->num;
+                $next['name'] = $pokeInfo->name;
+
+                $pokeList[1] = $next;
+            } elseif ($pokeInfo->num == $num - 1) {
+                $pre['num'] = $pokeInfo->num;
+                $pre['name'] = $pokeInfo->name;
+
+                $pokeList[0] = $pre;
+            } else {
+                $extra['num'] = $pokeInfo->num;
+                $extra['name'] = $pokeInfo->name;
+            }
+            echo $pokeInfo->num;
+            echo $pokeInfo->name;
+        }
+
+        foreach ($thisPoke as $pokeInfo) {
+            $info['num'] = $pokeInfo['num'];
+            $info['name'] = $pokeInfo['name'];
+            $info['img'] = $pokeInfo['img'];
+            $info['group_num'] = $pokeInfo['group_num'];
 
             if ($info['group_num'] > 0) {
                 $evolutionPoke = DB::table('poketmons as a')
@@ -86,14 +110,15 @@ class pokedexController extends Controller
                     array_push($evolution,$evolInfo);
                 }
             }
-
             // 현재 포켓몬
             array_push($result,$info);
         }
         return view('poketDetail',
             [
                 'poke'=>$result,
-                'evolution' =>$evolution
+                'evolution' =>$evolution,
+                'pokeList' =>$pokeList,
+                //'pre_num' => $
             ]);
     }
 }
