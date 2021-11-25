@@ -1,6 +1,7 @@
 <?php
 
-function Type($param) {
+function Type($param)
+{
     if (is_numeric($param)) {
         return numToType($param);
     } else {
@@ -70,6 +71,7 @@ function typeToNum($str): int
             $typeNum = 0;
             break;
     }
+
 
     return $typeNum;
 }
@@ -143,7 +145,7 @@ function typeColor($number): string
 {
     switch (trim($number)) {
         case 1 :
-            $bgColor = '#4a5568';  //노말
+            $bgColor = '#92999f';  //노말
             break;
         case 2 :
             $bgColor = '#efa061';  //불꽃
@@ -152,7 +154,7 @@ function typeColor($number): string
             $bgColor = '#608fcf';  //물
             break;
         case 4 :
-            $bgColor = '#92999f';  //전기
+            $bgColor = '#ffeb3b';  //전기
             break;
         case 5 :
             $bgColor = '#7ab766';  //풀
@@ -203,12 +205,81 @@ function typeColor($number): string
     return $bgColor;
 }
 
-function typeHtml($param) : string
+function typeHtml($param): string
 {
     if (is_numeric($param)) {
-        $html = '<span class="type" style="background-color: '.typeColor($param).'">'.Type($param).'</span>';
+        $html = '<span class="type" style="background-color: ' . typeColor($param) . '">' . Type($param) . '</span>';
     } else {
-        $html = '<span class="type" style="background-color: '.typeColor(Type($param)).'">'.$param.'</span>';
+        $html = '<span class="type" style="background-color: ' . typeColor(Type($param)) . '">' . $param . '</span>';
     }
     return $html;
+}
+
+function randomNum($rateArray, $valueArray) {
+    $random = mt_rand(1,array_sum($rateArray)*10);
+    $preRate = 0;
+    $nextRate = 0;
+    $findGroup = '';
+
+    for ($i=0; $i<count($rateArray); $i++) {
+        // 이전 비율보다 크고 다음 비율보다 작거나 같아야 출력
+        if ($random <= $rateArray[$i]*10 + $nextRate && $random > $preRate) {
+            $findGroup = $valueArray[$i];
+        } else {
+            $nextRate +=  $rateArray[$i]*10;
+        }
+    }
+
+    return $findGroup;
+}
+
+function randomRate(array $array) {
+    /*
+     * ex) [ ['rate']=>0,['value']=>0.1 ] 2차 배열
+     */
+    $findGroup = 0;
+    $rateArray = [];
+    $valueArray = [];
+
+    foreach ($array as $key0 => $array2) {
+        foreach ($array2 as $keys => $values) {
+            if ($keys == 'rate') {
+                array_push($rateArray, $values);
+            } else {
+                array_push($valueArray, $values);
+            }
+        }
+    }
+
+    $random = mt_rand(1,array_sum($rateArray) * 10);
+    $preRate = 0;
+    $nextRate = 0;
+
+    for ($i=0; $i<count($rateArray); $i++) {
+        // 이전 비율보다 크고 다음 비율보다 작거나 같아야 출력
+        if ($random <= $rateArray[$i] * 10 + $nextRate && $random > $preRate) {
+            $findGroup = $valueArray[$i];
+            break;
+        } else {
+            $nextRate +=  $rateArray[$i] * 10;
+        }
+    }
+    return $findGroup;
+}
+
+function weight(float $weight_or_height): string
+{
+    // 소수점 둘째자리까지
+    $randomWeight = [
+        ['rate'=>5,'value'=>mt_rand($weight_or_height*400,$weight_or_height*500)*(-1)],
+        ['rate'=>5,'value'=>mt_rand($weight_or_height*400,$weight_or_height*500)],
+        ['rate'=>10,'value'=>mt_rand($weight_or_height*300,$weight_or_height*400)*(-1)],
+        ['rate'=>10,'value'=>mt_rand($weight_or_height*300,$weight_or_height*400)],
+        ['rate'=>15,'value'=>mt_rand($weight_or_height*200,$weight_or_height*300)*(-1)],
+        ['rate'=>15,'value'=>mt_rand($weight_or_height*200,$weight_or_height*300)],
+        ['rate'=>20,'value'=>mt_rand(0,$weight_or_height*200)*(-1)],
+        ['rate'=>20,'value'=>mt_rand(0,$weight_or_height*200)]
+    ];
+
+    return sprintf('%.2f',$weight_or_height + (randomRate($randomWeight)/1000));
 }

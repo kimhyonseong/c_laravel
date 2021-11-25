@@ -1,5 +1,39 @@
 @extends('layouts.frame')
 
+@section('css')
+    #poketmonList {
+    display: flex;
+    flex-wrap: wrap;
+    /*justify-content: center;*/
+    }
+    #poketmonList li {
+    width: 150px;
+    height: 180px;
+    box-shadow: 3px 3px 7px gray;
+    border-radius: 10px;
+    margin: 20px;
+    transition: all 300ms ease-in-out;
+    }
+    #poketmonList li:hover {
+    transform: scale(1.1);
+    transition: all 300ms ease-in-out;
+    }
+    #poketmonList li .li_wrap {
+    box-sizing: border-box; padding: 10px; width: 100%; height: 100%;
+    }
+    #poketmonList li .li_wrap .img {
+    width: 100%; height: 75%; display: flex; justify-content: center;
+    }
+    #poketmonList li .li_wrap .info {
+    width: 100%;
+    }
+    #poketmonList li .li_wrap .info .num{
+    font-size: small;
+    color: rgba(0,0,0,0.6);
+    margin: 1px 0;
+    }
+@endsection
+
 @section('content')
     <ul id="poketmonList">
         <li>
@@ -27,13 +61,6 @@
         window.addEventListener("DOMContentLoaded", function () {
             // 최초 함수 실행
             showPoketmon(page);
-        })
-
-        window.addEventListener('load', function () {
-            // if (poketmonList.clientHeight < document.body.clientHeight) {
-            //     ++page;
-            //     showPoketmon(page);
-            // }
         })
 
         window.addEventListener('scroll', function () {
@@ -79,38 +106,4 @@
             ajax.send();
         }
     </script>
-@endsection
-
-@section('css')
-    #poketmonList {
-    display: flex;
-    flex-wrap: wrap;
-    /*justify-content: center;*/
-    }
-    #poketmonList li {
-    width: 150px;
-    height: 180px;
-    box-shadow: 3px 3px 7px gray;
-    border-radius: 10px;
-    margin: 20px;
-    transition: all 300ms ease-in-out;
-    }
-    #poketmonList li:hover {
-    transform: scale(1.1);
-    transition: all 300ms ease-in-out;
-    }
-    #poketmonList li .li_wrap {
-    box-sizing: border-box; padding: 10px; width: 100%; height: 100%;
-    }
-    #poketmonList li .li_wrap .img {
-    width: 100%; height: 75%; display: flex; justify-content: center;
-    }
-    #poketmonList li .li_wrap .info {
-    width: 100%;
-    }
-    #poketmonList li .li_wrap .info .num{
-    font-size: small;
-    color: rgba(0,0,0,0.6);
-    margin: 1px 0;
-    }
 @endsection

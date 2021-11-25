@@ -15,7 +15,7 @@ class UpdatePoketmonsTable extends Migration
     public function up()
     {
         Schema::table('poketmons', function (Blueprint $table) {
-            $jsonUrl = 'http://localhost/json/pokedex-korean.json';
+            $jsonUrl = 'http://poketmon.ml//json/pokedex-korean.json';
             $jsonStr = file_get_contents($jsonUrl);
 
             $contents = json_decode($jsonStr,false);

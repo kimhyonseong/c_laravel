@@ -140,6 +140,7 @@ class InsertTypesTable extends Migration
     public function down()
     {
         Schema::table('types', function (Blueprint $table) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
             DB::table('types')->truncate();
         });
     }

@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ko">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>도감</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
     <style>
         * {
             margin: 0;
@@ -89,18 +89,31 @@
                 <img src="{{asset('image/poketball.png')}}" style="width: 52px;" alt="메인 이동">
                 <div class="right">
                     <ul>
-                        <li class="on"><a href="/pokedex">사전</a></li>
-                        <li>로그인</li>
+                        <li><a href="/findPoke">풀숲</a></li>
+                        <li><a href="/pokedex">도감</a></li>
+                        @if(Route::has('login'))
+                            @auth
+                                <li>
+                                    <a href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">로그아웃</a></li>
+                            @else
+                                <li><a href="{{ route('login') }}">로그인</a></li>
+                            @endauth
+                        @endif
                         <li>검색</li>
                     </ul>
                 </div>
             </div>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         </header>
     @show
     <main>
         @yield('content')
     </main>
-        @yield('script')
+    @yield('script')
 </div>
 </body>
 </html>

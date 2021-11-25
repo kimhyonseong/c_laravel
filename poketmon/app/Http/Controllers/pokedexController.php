@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\catchPoke;
 use App\Models\Poketmon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class pokedexController extends Controller
 {
     public function show() {
-//        $poketmons = Poketmon::where('num','<','5')->get();
-//        foreach ($poketmons as $list) {
-//            echo $list->name.'<br>';
-//        }
         $returnData = "";
         return view('pokedex',['data'=>$returnData]);
     }
@@ -26,6 +24,11 @@ class pokedexController extends Controller
         }
 
         $resultArray = [];
+
+        // 로그인 되어 있으면 내가 발견한 포켓몬만 사진 보여주기
+        if (Auth::check()) {
+
+        }
         $poketmons = Poketmon::all()->skip($offset * $page)->take($offset);
 
         foreach ($poketmons as $result) {
